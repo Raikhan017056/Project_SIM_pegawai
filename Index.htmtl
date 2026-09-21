@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM-SDM Supabase</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- HALAMAN LOGIN -->
+    <section id="login-section" class="card-container">
+        <div class="card login-card">
+            <h2>Login SIM-SDM</h2>
+            <p>Sistem Informasi Manajemen Data Dosen & Pegawai</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="login-username" placeholder="admin / kepegawaian / nama_pegawai" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="Masukkan password..." required>
+                </div>
+                <button type="submit" class="btn btn-primary">Masuk Sistem</button>
+            </form>
+            <div class="demo-info">
+            </div>
+        </div>
+    </section>
+
+    <!-- HALAMAN UTAMA APLIKASI (DASHBOARD) -->
+    <section id="app-section" class="hidden">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <h3>🗄️ SIM-SDM Supabase</h3>
+                <small>UPT. PSI UNSERA</small>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="menu-link active" data-target="panel-dashboard" id="nav-dashboard">📊 Dashboard</a></li>
+                <li id="menu-user-container" class="hidden"><a href="#" class="menu-link" data-target="panel-user">👥 Manajemen User</a></li>
+                <li id="menu-pegawai-container"><a href="#" class="menu-link" data-target="panel-pegawai">🗂️ Data Dosen & Pegawai</a></li>
+                <li id="menu-absensi-container" class="hidden"><a href="#" class="menu-link" data-target="panel-absensi">📅 Absensi Harian</a></li>
+                <li id="menu-rekap-absensi-container" class="hidden"><a href="#" class="menu-link" data-target="panel-rekap-absensi">📋 Rekap Absensi Pegawai</a></li>
+                <li id="menu-cuti-container" class="hidden"><a href="#" class="menu-link" data-target="panel-cuti">✉️ Pengajuan Cuti</a></li>
+                <li id="menu-approval-container" class="hidden"><a href="#" class="menu-link" data-target="panel-approval">✅ Validasi Cuti Masuk</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <button id="btn-logout" class="btn btn-danger btn-block">Logout</button>
+            </div>
+        </div>
+
+        <!-- KONTEN UTAMA -->
+        <div class="main-content">
+            <header class="main-header">
+                <h2 id="page-title">Dashboard Utama</h2>
+                <div class="user-profile-badge">
+                    <span id="user-badge" class="badge">Role: -</span>
+                </div>
+            </header>
+
+            <div class="container">
+                <!-- PANEL DASHBOARD -->
+                <div id="panel-dashboard" class="content-panel">
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <h4>Total Dosen</h4>
+                            <h2 id="total-dosen">0</h2>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Total Pegawai / Staff</h4>
+                            <h2 id="total-pegawai">0</h2>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Total Keseluruhan SDM</h4>
+                            <h2 id="total-sdm">0</h2>
+                        </div>
+                    </div>
+                    <div class="card mt-20">
+                        <h3>Sistem Basis Data Cloud (Supabase)</h3>
+                        <p>Aplikasi ini terhubung secara real-time dengan server database cloud Supabase untuk pengelolaan data kepegawaian UPT. Pengembangan Sistem Informasi UNSERA[cite: 2].</p>
+                    </div>
+                </div>
+
+                <!-- PANEL MANAJEMEN USER (Admin) -->
+                <div id="panel-user" class="content-panel hidden">
+                    <div class="card">
+                        <div class="card-header-flex">
+                            <h3>Manajemen Akun & Hak Akses User</h3>
+                            <button class="btn btn-primary" id="btn-open-user-modal">+ Buat Akun Baru</button>
+                        </div>
+                        <p>Formulir pembuatan akun baru dipusatkan di profil admin[cite: 2].</p>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Username</th>
+                                        <th>Role / Hak Akses</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL DATA DOSEN & PEGAWAI -->
+                <div id="panel-pegawai" class="content-panel hidden">
+                    <div class="card">
+                        <div class="card-header-flex">
+                            <h3>Database Supabase: Pegawai & Dosen Aktif</h3>
+                            <button class="btn btn-primary" id="btn-open-pegawai-modal">+ Tambah Data</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>NIP</th>
+                                        <th>Nama Lengkap</th>
+                                        <th>Kategori</th>
+                                        <th>Jabatan</th>
+                                        <th>Unit / Prodi</th>
+                                        <th>Riwayat Pend.</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pegawai-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL ABSENSI (Khusus Pegawai) -->
+                <div id="panel-absensi" class="content-panel hidden">
+                    <div class="card">
+                        <h3>Absensi Kehadiran Harian Pegawai</h3>
+                        <p>Silakan lakukan absensi kehadiran dan kepulangan Anda hari ini.</p>
+                        
+                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <button id="btn-absen-masuk" class="btn btn-success">Absen Masuk</button>
+                            <button id="btn-absen-pulang" class="btn btn-danger">Absen Pulang</button>
+                        </div>
+                        
+                        <h4>Riwayat Absensi Anda</h4>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Tanggal & Waktu Masuk</th>
+                                        <th>Waktu Pulang</th>
+                                        <th>Status Kehadiran</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="absensi-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL REKAP ABSENSI (Khusus Kepegawaian & Admin) -->
+                <div id="panel-rekap-absensi" class="content-panel hidden">
+                    <div class="card">
+                        <h3>Rekapitulasi Kehadiran & Kepulangan Pegawai</h3>
+                        <p>Daftar seluruh catatan absensi harian pegawai yang masuk ke sistem.</p>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Username Pegawai</th>
+                                        <th>Tanggal</th>
+                                        <th>Waktu Masuk</th>
+                                        <th>Waktu Pulang</th>
+                                        <th>Status Kehadiran</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rekap-absensi-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL PENGAJUAN CUTI (Khusus Pegawai) -->
+                <div id="panel-cuti" class="content-panel hidden">
+                    <div class="card">
+                        <h3>Form Pengajuan Cuti Pegawai</h3>
+                        <form id="form-cuti">
+                            <div class="form-group">
+                                <label>Jenis Cuti:</label>
+                                <select id="cuti-jenis" required>
+                                    <option value="Cuti Tahunan">Cuti Tahunan</option>
+                                    <option value="Cuti Sakit">Cuti Sakit (Wajib Surat Dokter)</option>
+                                    <option value="Cuti Alasan Penting">Cuti Alasan Penting</option>
+                                </select>
+                            </div>
+                            <div class="form-row" style="display: flex; gap: 15px;">
+                                <div class="form-group" style="flex:1;">
+                                    <label>Tanggal Mulai:</label>
+                                    <input type="date" id="cuti-mulai" required>
+                                </div>
+                                <div class="form-group" style="flex:1;">
+                                    <label>Tanggal Selesai:</label>
+                                    <input type="date" id="cuti-selesai" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Alasan Cuti:</label>
+                                <textarea id="cuti-alasan" rows="3" placeholder="Tuliskan alasan pengajuan cuti..." required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Upload Dokumen / Gambar Pendukung (Surat Dokter/Bukti Lain):</label>
+                                <input type="file" id="cuti-file" accept="image/*,.pdf">
+                                <small>Format: Gambar (JPG/PNG) atau PDF.</small>
+                            </div>
+                            <button type="submit" class="btn btn-success">Kirim ke Bagian Kepegawaian</button>
+                        </form>
+                    </div>
+
+                    <div class="card mt-20">
+                        <h3>Riwayat & Status Pengajuan Cuti Anda</h3>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Jenis</th>
+                                        <th>Tanggal</th>
+                                        <th>Alasan</th>
+                                        <th>Lampiran File</th>
+                                        <th>Status Persetujuan</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="riwayat-cuti-pegawai-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL VALIDASI CUTI MASUK (Khusus Kepegawaian / Admin) -->
+                <div id="panel-approval" class="content-panel hidden">
+                    <div class="card">
+                        <h3>Daftar Pengajuan Cuti Masuk dari Pegawai</h3>
+                        <p>Validasi dan berikan persetujuan cuti pegawai di sini.</p>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Pemohon</th>
+                                        <th>Jenis Cuti</th>
+                                        <th>Tanggal</th>
+                                        <th>Alasan</th>
+                                        <th>Lampiran</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="approval-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL PEGAWAI & USER -->
+    <div id="pegawai-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-pegawai-modal">&times;</span>
+            <h3 id="pegawai-modal-title">Tambah Data Dosen / Pegawai</h3>
+            <form id="form-pegawai">
+                <input type="hidden" id="pegawai-id">
+                <div class="form-group"><label>NIP:</label><input type="text" id="input-nip" required></div>
+                <div class="form-group"><label>Nama Lengkap:</label><input type="text" id="input-nama" required></div>
+                <div class="form-group"><label>Kategori:</label>
+                    <select id="input-kategori" required><option value="Dosen">Dosen</option><option value="Pegawai">Pegawai</option></select>
+                </div>
+                <div class="form-group"><label>Jabatan:</label><input type="text" id="input-jabatan" required></div>
+                <div class="form-group"><label>Unit / Prodi:</label><input type="text" id="input-unit" required></div>
+                <div class="form-group"><label>Jumlah Riwayat Pendidikan:</label><input type="number" id="input-riwayat" min="1" value="1" required></div>
+                <button type="submit" class="btn btn-success btn-block">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="user-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-user-modal">&times;</span>
+            <h3>Buat Akun Pengguna Baru</h3>
+            <form id="form-user">
+                <div class="form-group"><label>Username:</label><input type="text" id="new-username" required></div>
+                <div class="form-group"><label>Password:</label><input type="password" id="new-password" required></div>
+                <div class="form-group"><label>Role / Hak Akses:</label>
+                    <select id="new-role" required>
+                        <option value="admin">Admin</option>
+                        <option value="kepegawaian">Kepegawaian</option>
+                        <option value="pegawai">Pegawai</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Simpan Akun</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
